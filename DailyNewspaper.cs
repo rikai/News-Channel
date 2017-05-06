@@ -105,18 +105,10 @@ namespace DailyNewspaper
 
 		public void overightChannel(Farmer who, string answer)
 		{
-			Monitor.Log("pre-hit");
 			string str = answer.Split(' ')[0];
-			Monitor.Log("hit");
 			if (str == "News")
 			{
-
-				//TVChannel.SetValue(Target, 4);
-				Monitor.Log("Hit2");
-
 				TVScreen.SetValue(Target, new TemporaryAnimatedSprite(this.newsScreen, new Rectangle(0, 0, 42, 28), 150f, 2, 999999, Target.getScreenPosition(), false, false, (float)((double)(Target.boundingBox.Bottom - 1) / 10000.0 + 9.99999974737875E-06), 0.0f, Color.White, Target.getScreenSizeModifier(), 0.0f, 0.0f, 0.0f, false));
-				Monitor.Log("hit3");
-
 				Game1.drawObjectDialogue(Game1.parseText(this.config.newsItems[this.dailyNews]));
 				Game1.afterDialogues = new Game1.afterFadeFunction(this.NextScene);
 
@@ -135,7 +127,6 @@ namespace DailyNewspaper
 					Target = (TV)Callback.Target;
 				}
 			}
-
 		}
 
 		public void NextScene()
