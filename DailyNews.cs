@@ -44,7 +44,8 @@ namespace DailyNews
 			{
 
 				MenuEvents.MenuChanged += Event_MenuChanged;
-				this.dailyNews = Game1.random.Next(this.config.newsItems.Count);
+				Random randomNews = new Random();
+				this.dailyNews = randomNews.Next(0,this.config.newsItems.Count);
 				showMessage("Breaking News for " + UppercaseFirst(Game1.currentSeason) + " " + Game1.dayOfMonth);
 			}
 			else
@@ -74,11 +75,7 @@ namespace DailyNews
 					}
 
 				}
-
 			}
-
-			this.Monitor.Log(Game1.activeClickableMenu.ToString());
-
 		}
 
 		public static void showMessage(string msg)
