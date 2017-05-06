@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B4778213-77FB-4481-BFBD-D0029E3751A0}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>DailyNewspaper</RootNamespace>
-    <AssemblyName>DailyNewspaper</AssemblyName>
+    <RootNamespace>DailyNews</RootNamespace>
+    <AssemblyName>DailyNews</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,9 +40,6 @@
     </None>
     <None Include="packages.config" />
     <None Include="assets\news.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
