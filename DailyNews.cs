@@ -9,7 +9,7 @@ using StardewValley.Objects;
 
 namespace DailyNews
 {
-    public class DailyNews : Mod
+    public class ModEntry : Mod
     {
         private int dailyNews;
         private ModConfig config;
