@@ -21,18 +21,16 @@ namespace DailyNews
 		ModConfig config;
 		Texture2D newsScreen;
 
-
 		//tv overloading
 		private static FieldInfo Field = typeof(GameLocation).GetField("afterQuestion", BindingFlags.Instance | BindingFlags.NonPublic);
 		private static FieldInfo TVScreen = typeof(TV).GetField("screen", BindingFlags.Instance | BindingFlags.NonPublic);
 		private static GameLocation.afterQuestionBehavior Callback;
 		private static TV Target;
 
-
 		public override void Entry(IModHelper helper)
 		{
 			// submit to events in StardewModdingAPI
-			TimeEvents.DayOfMonthChanged += CheckIfNews;
+			TimeEvents.AfterDayStarted += CheckIfNews;
 			this.config = this.Helper.ReadConfig<ModConfig>();
 			this.newsScreen = this.Helper.Content.Load<Texture2D>(@"assets\news.png", ContentSource.ModFolder);
 		}
@@ -42,7 +40,6 @@ namespace DailyNews
 			string str = Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth);
 			if (str.Equals("Tue") || str.Equals("Fri") || str.Equals("Sat"))
 			{
-
 				MenuEvents.MenuChanged += Event_MenuChanged;
 				Random randomNews = new Random();
 				this.dailyNews = randomNews.Next(0,this.config.newsItems.Count);
@@ -62,7 +59,6 @@ namespace DailyNews
 			{
 				if (e.NewMenu is StardewValley.Menus.DialogueBox)
 				{
-					
 					List<string> dialogues = this.Helper.Reflection.GetPrivateValue<List<string>>(e.NewMenu, "dialogues");
 					if (dialogues.Count == 1 && dialogues[0] == Game1.content.LoadString("Strings\\StringsFromCSFiles:TV.cs.13120"))
 					{
@@ -73,7 +69,6 @@ namespace DailyNews
 						GameLocation.afterQuestionBehavior afterQuestion = new GameLocation.afterQuestionBehavior(this.overightChannel);
 						this.Helper.Reflection.GetPrivateField<GameLocation.afterQuestionBehavior>(Game1.currentLocation, "afterQuestion").SetValue(afterQuestion);
 					}
-
 				}
 			}
 		}
