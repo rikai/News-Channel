@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DailyNewspaper
+namespace DailyNews
 {
 	public class ModConfig
 	{

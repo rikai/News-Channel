@@ -11,7 +11,7 @@ using StardewValley.Menus;
 using StardewValley.Objects;
 using xTile;
 
-namespace DailyNewspaper
+namespace DailyNews
 {
 
 	public class ModEntry : Mod

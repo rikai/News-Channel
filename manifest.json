@@ -1,5 +1,5 @@
 ﻿{
-   "Name": "DailyNewspaper",
+   "Name": "DailyNews",
    "Author": "bashninja",
    "Version": {
       "MajorVersion": 0,
@@ -8,6 +8,6 @@
       "Build": ""
    },
    "Description": "Your little dose of daily news",
-   "UniqueID": "bashNinja.DailyNewspaper",
-   "EntryDll": "DailyNewspaper.dll"
+   "UniqueID": "bashNinja.DailyNews",
+   "EntryDll": "DailyNews.dll"
 }
