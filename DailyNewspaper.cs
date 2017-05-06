@@ -1,59 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Locations;
+using StardewValley.Menus;
+using StardewValley.Objects;
+using xTile;
 
 namespace DailyNewspaper
 {
+
 	public class ModEntry : Mod
 	{
+		GameLocation.afterQuestionBehavior old_afterQuestion;
+		int dailyNews;
+		ModConfig config;
+		Texture2D newsScreen;
+
+
+		//tv overloading
+		private static FieldInfo Field = typeof(GameLocation).GetField("afterQuestion", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static FieldInfo TVChannel = typeof(TV).GetField("currentChannel", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static FieldInfo TVScreen = typeof(TV).GetField("screen", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static FieldInfo TVScreenOverlay = typeof(TV).GetField("screenOverlay", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static MethodInfo TVMethod = typeof(TV).GetMethod("getWeatherChannelOpening", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static MethodInfo TVMethodOverlay = typeof(TV).GetMethod("setWeatherOverlay", BindingFlags.Instance | BindingFlags.NonPublic);
+		private static GameLocation.afterQuestionBehavior Callback;
+		private static TV Target;
+
 
 		public override void Entry(IModHelper helper)
 		{
 			// submit to events in StardewModdingAPI
 			TimeEvents.DayOfMonthChanged += CheckIfNews;
-
+			this.config = this.Helper.ReadConfig<ModConfig>();
+			this.newsScreen = this.Helper.Content.Load<Texture2D>(@"assets\news.png", ContentSource.ModFolder);
 		}
 
 		private void CheckIfNews(object sender, EventArgs e)
 		{
-			this.Monitor.Log("newday");
 			string str = Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth);
 			if (str.Equals("Tue") || str.Equals("Fri") || str.Equals("Sat"))
 			{
 
 				MenuEvents.MenuChanged += Event_MenuChanged;
-				this.Monitor.Log("add news");
+				this.dailyNews = Game1.random.Next(this.config.newsItems.Count);
 				showMessage("Breaking News for " + UppercaseFirst(Game1.currentSeason) + " " + Game1.dayOfMonth);
 			}
 			else
 			{
 				MenuEvents.MenuChanged -= Event_MenuChanged;
-				this.Monitor.Log("remove news");
 			}
 		}
 
 		private void Event_MenuChanged(object sender, EventArgsClickableMenuChanged e)
 		{
+            TryHookTelevision();
 			string day = Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth);
 			if (day.Equals("Tue") || day.Equals("Fri") || day.Equals("Sat"))
 			{
 				if (e.NewMenu is StardewValley.Menus.DialogueBox)
 				{
+					
 					List<string> dialogues = this.Helper.Reflection.GetPrivateValue<List<string>>(e.NewMenu, "dialogues");
 					if (dialogues.Count == 1 && dialogues[0] == Game1.content.LoadString("Strings\\StringsFromCSFiles:TV.cs.13120"))
 					{
-						this.Monitor.Log("TV MENU");
 						List<Response> responseList = this.Helper.Reflection.GetPrivateValue<List<Response>>(e.NewMenu, "responses");
 						Response news = new Response("News", "News Report");
 						responseList.Insert(responseList.Count - 1, news);
-
-						GameLocation.afterQuestionBehavior afterQuestion = this.Helper.Reflection.GetPrivateValue<GameLocation.afterQuestionBehavior>(Game1.currentLocation, "afterQuestion");
-						this.Monitor.Log(afterQuestion.ToString());
-						afterQuestion = new GameLocation.afterQuestionBehavior(this.overightChannel);
-
+						old_afterQuestion = this.Helper.Reflection.GetPrivateValue<GameLocation.afterQuestionBehavior>(Game1.currentLocation, "afterQuestion");
+						GameLocation.afterQuestionBehavior afterQuestion = new GameLocation.afterQuestionBehavior(this.overightChannel);
+						this.Helper.Reflection.GetPrivateField<GameLocation.afterQuestionBehavior>(Game1.currentLocation, "afterQuestion").SetValue(afterQuestion);
 					}
 
 				}
@@ -84,7 +105,42 @@ namespace DailyNewspaper
 
 		public void overightChannel(Farmer who, string answer)
 		{
-			Game1.drawObjectDialogue(Game1.parseText("Your TV was Hacked!"));
+			Monitor.Log("pre-hit");
+			string str = answer.Split(' ')[0];
+			Monitor.Log("hit");
+			if (str == "News")
+			{
+
+				//TVChannel.SetValue(Target, 4);
+				Monitor.Log("Hit2");
+
+				TVScreen.SetValue(Target, new TemporaryAnimatedSprite(this.newsScreen, new Rectangle(0, 0, 42, 28), 150f, 2, 999999, Target.getScreenPosition(), false, false, (float)((double)(Target.boundingBox.Bottom - 1) / 10000.0 + 9.99999974737875E-06), 0.0f, Color.White, Target.getScreenSizeModifier(), 0.0f, 0.0f, 0.0f, false));
+				Monitor.Log("hit3");
+
+				Game1.drawObjectDialogue(Game1.parseText(this.config.newsItems[this.dailyNews]));
+				Game1.afterDialogues = new Game1.afterFadeFunction(this.NextScene);
+
+			}
+			else
+				this.old_afterQuestion(who, answer);
+		}
+
+		public void TryHookTelevision()
+		{
+			if (Game1.currentLocation != null && Game1.currentLocation is DecoratableLocation && Game1.activeClickableMenu != null && Game1.activeClickableMenu is DialogueBox)
+			{
+				Callback = (GameLocation.afterQuestionBehavior)Field.GetValue(Game1.currentLocation);
+				if (Callback != null && Callback.Target.GetType() == typeof(TV))
+				{
+					Target = (TV)Callback.Target;
+				}
+			}
+
+		}
+
+		public void NextScene()
+		{
+			Target.turnOffTV();
 		}
 
 	}
