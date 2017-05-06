@@ -1,4 +1,4 @@
-﻿using StardewModdingAPI;
+using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using CustomTV;
 using System;
@@ -9,7 +9,8 @@ using StardewValley.Objects;
 
 namespace DailyNews
 {
-    public class ModEntry : Mod
+
+  public class ModEntry : Mod
     {
         private int dailyNews;
         private ModConfig config;
@@ -55,4 +56,5 @@ namespace DailyNews
             Game1.addHUDMessage(hudmsg);
         }
     }
+
 }
