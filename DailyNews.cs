@@ -9,7 +9,7 @@ using StardewValley.Objects;
 
 namespace DailyNews
 {
-    public class DailyNewsMod : Mod
+    public class DailyNews : Mod
     {
         private int dailyNews;
         private ModConfig config;
@@ -45,7 +45,7 @@ namespace DailyNews
             
             TemporaryAnimatedSprite newsSprite = new TemporaryAnimatedSprite(newsScreen, new Rectangle(0, 0, 42, 28), 150f, 2, 999999, tv.getScreenPosition(), false, false, (float)((double)(tv.boundingBox.Bottom - 1) / 10000.0 + 9.99999974737875E-06), 0.0f, Color.White, tv.getScreenSizeModifier(), 0.0f, 0.0f, 0.0f, false);
             string text = config.newsItems[dailyNews];
-            CustomTVMod.showProgram(newsSprite, text, CustomTVMod.endProgrmm);
+            CustomTVMod.showProgram(newsSprite, text, CustomTVMod.endProgram);
         }
 
         private static void showMessage(string msg)
