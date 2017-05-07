@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace DailyNews
 {
 
-  public class ModEntry : Mod
+    public class ModEntry : Mod
     {
         private int dailyNews;
         private ModConfig config;
@@ -21,38 +21,38 @@ namespace DailyNews
         private List<string> contentFolderFiles;
         private string contentFolderExtension;
         private List<string> combinedNewsItems = new List<string>();
-		public string customContentFolder;
+        public string customContentFolder;
 
         public override void Entry(IModHelper helper)
         {
-			this.config = helper.ReadConfig<ModConfig>();
+            this.config = helper.ReadConfig<ModConfig>();
 
-			customContentFolder = Path.Combine(helper.DirectoryPath, this.config.contentFolder);
-			if (!Directory.Exists(customContentFolder))
-			{
-				Directory.CreateDirectory(customContentFolder);
-                showMessage("The '" + this.config.contentFolder + "' folder is empty. Mod broken.",1);
-			}
+            customContentFolder = Path.Combine(helper.DirectoryPath, this.config.contentFolder);
+            if (!Directory.Exists(customContentFolder))
+            {
+                Directory.CreateDirectory(customContentFolder);
+                showMessage("The '" + this.config.contentFolder + "' folder is empty. Mod broken.", 1);
+            }
 
             this.newsScreen = helper.Content.Load<Texture2D>(@"assets\" + config.texture);
             this.contentFolderExtension = config.extension;
 
 
-			SaveEvents.AfterLoad += (x, y) => Load();
+            SaveEvents.AfterLoad += (x, y) => Load();
 
-            TimeEvents.DayOfMonthChanged += (x,y) => checkIfNews();
+            TimeEvents.DayOfMonthChanged += (x, y) => checkIfNews();
         }
 
         private void Load()
         {
-			contentFolderFiles = ParseDir(customContentFolder,contentFolderExtension);
+            contentFolderFiles = ParseDir(customContentFolder, contentFolderExtension);
             foreach (string file in contentFolderFiles)
             {
                 var contentFiles = this.Helper.ReadJsonFile<ModData>(file) ?? new ModData();
                 combinedNewsItems.AddRange(contentFiles.newsItems);
             }
         }
-     
+
         private void checkIfNews()
         {
             CustomTVMod.removeChannel("News");
@@ -66,7 +66,7 @@ namespace DailyNews
                 dailyNews = randomNews.Next(0, combinedNewsItems.Count);
 
                 if (config.showMessages)
-                    showMessage("Breaking News for " + char.ToUpper(season[0]) + season.Substring(1) + " " + Game1.dayOfMonth,2);
+                    showMessage("Breaking News for " + char.ToUpper(season[0]) + season.Substring(1) + " " + Game1.dayOfMonth, 2);
             }
         }
 
@@ -84,25 +84,25 @@ namespace DailyNews
             Game1.addHUDMessage(hudmsg);
         }
 
-		private List<string> ParseDir(string path, string extension)
-		{
+        private List<string> ParseDir(string path, string extension)
+        {
             List<string> customFiles = new List<string>();
             foreach (string dir in Directory.EnumerateDirectories(path))
-			{
-				ParseDir(Path.Combine(path, dir),extension);
-			}
+            {
+                ParseDir(Path.Combine(path, dir), extension);
+            }
 
-			foreach (string file in Directory.EnumerateFiles(path))
-			{
-				if (Path.GetExtension(file) == extension)
-				{
-					string filePath = Path.Combine(path, Path.GetDirectoryName(file), Path.GetFileName(file));
-					customFiles.Add(filePath);
-					Monitor.Log(filePath);
-				}
-			}
+            foreach (string file in Directory.EnumerateFiles(path))
+            {
+                if (Path.GetExtension(file) == extension)
+                {
+                    string filePath = Path.Combine(path, Path.GetDirectoryName(file), Path.GetFileName(file));
+                    customFiles.Add(filePath);
+                    Monitor.Log(filePath);
+                }
+            }
             return customFiles;
-		}
+        }
 
 
     }
