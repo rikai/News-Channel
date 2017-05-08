@@ -9,7 +9,6 @@ using StardewValley;
 using StardewValley.Objects;
 using System.Collections.Generic;
 
-
 namespace DailyNews
 {
 
@@ -17,8 +16,9 @@ namespace DailyNews
     {
         private int dailyNews;
         private ModConfig config;
+        private ModData contentFiles;
         private Texture2D newsScreen;
-        private List<string> contentFolderFiles;
+        private string[] contentFolderFiles;
         private string contentFolderExtension;
         private List<string> combinedNewsItems = new List<string>();
         public string customContentFolder;
@@ -30,15 +30,16 @@ namespace DailyNews
             customContentFolder = Path.Combine(helper.DirectoryPath, this.config.contentFolder);
             if (!Directory.Exists(customContentFolder))
             {
+                Monitor.Log("The '" + this.config.contentFolder + "' folder is empty. Mod broken.", LogLevel.Error);
                 Directory.CreateDirectory(customContentFolder);
-                showMessage("The '" + this.config.contentFolder + "' folder is empty. Mod broken.", 1);
+                this.Monitor.Log("Created the '" + this.config.contentFolder + "' folder", LogLevel.Warn);
             }
 
             this.newsScreen = helper.Content.Load<Texture2D>(@"assets\" + config.texture);
             this.contentFolderExtension = config.extension;
 
 
-            SaveEvents.AfterLoad += (x, y) => Load();
+            SaveEvents.AfterLoad += (x, y) => this.Load();
 
             TimeEvents.DayOfMonthChanged += (x, y) => checkIfNews();
         }
@@ -46,9 +47,10 @@ namespace DailyNews
         private void Load()
         {
             contentFolderFiles = ParseDir(customContentFolder, contentFolderExtension);
-            foreach (string file in contentFolderFiles)
+			foreach (string file in contentFolderFiles)
             {
-                var contentFiles = this.Helper.ReadJsonFile<ModData>(file) ?? new ModData();
+                this.Monitor.Log("Loading: " + file, LogLevel.Trace);
+                contentFiles = this.Helper.ReadJsonFile<ModData>(file) ?? new ModData();
                 combinedNewsItems.AddRange(contentFiles.newsItems);
             }
         }
@@ -70,7 +72,7 @@ namespace DailyNews
             }
         }
 
-        private void deliverNews(TV tv, TemporaryAnimatedSprite sprite, StardewValley.Farmer who, string answer)
+        private void deliverNews(TV tv, TemporaryAnimatedSprite sprite, Farmer who, string answer)
         {
             TemporaryAnimatedSprite newsSprite = new TemporaryAnimatedSprite(newsScreen, new Rectangle(0, 0, 42, 28), 150f, 2, 999999, tv.getScreenPosition(), false, false, (float)((double)(tv.boundingBox.Bottom - 1) / 10000.0 + 9.99999974737875E-06), 0.0f, Color.White, tv.getScreenSizeModifier(), 0.0f, 0.0f, 0.0f, false);
             string text = combinedNewsItems[dailyNews];
@@ -84,27 +86,9 @@ namespace DailyNews
             Game1.addHUDMessage(hudmsg);
         }
 
-        private List<string> ParseDir(string path, string extension)
-        {
-            List<string> customFiles = new List<string>();
-            foreach (string dir in Directory.EnumerateDirectories(path))
-            {
-                ParseDir(Path.Combine(path, dir), extension);
-            }
-
-            foreach (string file in Directory.EnumerateFiles(path))
-            {
-                if (Path.GetExtension(file) == extension)
-                {
-                    string filePath = Path.Combine(path, Path.GetDirectoryName(file), Path.GetFileName(file));
-                    customFiles.Add(filePath);
-                    Monitor.Log(filePath);
-                }
-            }
-            return customFiles;
-        }
-
-
+        private string[] ParseDir(string path, string extension){
+			return Directory.GetFiles(path, extension, SearchOption.AllDirectories);
+		}
     }
 
 }

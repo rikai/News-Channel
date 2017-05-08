@@ -30,6 +30,7 @@
     <Reference Include="System" />
     <Reference Include="CustomTV">
       <HintPath>..\..\CustomTV\CustomTV\bin\Debug\CustomTV.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
  
