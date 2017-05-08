@@ -25,34 +25,35 @@ namespace DailyNews
 
         public override void Entry(IModHelper helper)
         {
-            this.config = helper.ReadConfig<ModConfig>();
-
-            customContentFolder = Path.Combine(helper.DirectoryPath, this.config.contentFolder);
-            if (!Directory.Exists(customContentFolder))
-            {
-                Monitor.Log("The '" + this.config.contentFolder + "' folder is empty. Mod broken.", LogLevel.Error);
-                Directory.CreateDirectory(customContentFolder);
-                this.Monitor.Log("Created the '" + this.config.contentFolder + "' folder", LogLevel.Warn);
-            }
-
-            this.newsScreen = helper.Content.Load<Texture2D>(@"assets\" + config.texture);
-            this.contentFolderExtension = config.extension;
-
-
-            SaveEvents.AfterLoad += (x, y) => this.Load();
-
+            Load();
             TimeEvents.DayOfMonthChanged += (x, y) => checkIfNews();
         }
 
         private void Load()
         {
+            //Read the config file.
+			this.config = this.Helper.ReadConfig<ModConfig>();
+			customContentFolder = Path.Combine(this.Helper.DirectoryPath, this.config.contentFolder);
+			if (!Directory.Exists(customContentFolder))
+			{
+				Monitor.Log("The '" + this.config.contentFolder + "' folder is empty. Mod broken.", LogLevel.Error);
+				Directory.CreateDirectory(customContentFolder);
+				this.Monitor.Log("Created the '" + this.config.contentFolder + "' folder", LogLevel.Warn);
+			}
+
+            this.contentFolderExtension = config.extension;
+
+
+
+            //Read the news files.
             contentFolderFiles = ParseDir(customContentFolder, contentFolderExtension);
 			foreach (string file in contentFolderFiles)
             {
                 this.Monitor.Log("Loading: " + file, LogLevel.Trace);
                 contentFiles = this.Helper.ReadJsonFile<ModData>(file) ?? new ModData();
                 combinedNewsItems.AddRange(contentFiles.newsItems);
-            }
+                this.newsScreen = this.Helper.Content.Load<Texture2D>(contentFiles.newscaster);
+			}
         }
 
         private void checkIfNews()
