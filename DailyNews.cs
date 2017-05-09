@@ -61,14 +61,14 @@ namespace DailyNews
         {
             CustomTVMod.removeChannel("News");
 
-			Random randomNews = new Random();
-			dailyNews = randomNews.Next(0, NewsItems.Count);
+            Random randomNews = new Random();
+            dailyNews = randomNews.Next(0, NewsItems.Count);
 
             string str = Game1.shortDayNameFromDayOfSeason(Game1.dayOfMonth);
 
             if (str.Equals("Tue") || str.Equals("Fri") || str.Equals("Sat"))
             {
-				string season = Game1.currentSeason;
+                string season = Game1.currentSeason;
                 CustomTVMod.addChannel("News", "News Report", deliverNews);
 
                 if (config.showMessages)
@@ -79,13 +79,13 @@ namespace DailyNews
         private void deliverNews(TV tv, TemporaryAnimatedSprite sprite, Farmer who, string answer)
         {
             Texture2D newsScreen = null;
-           
+
             try  //Try to load news screen from .json file
-			{
+            {
                 newsScreen = Helper.Content.Load<Texture2D>(NewsItems[dailyNews].Texture);
-			}
+            }
             catch  //If the load failed, just load the default newscaster.
-			{     
+            {
                 Monitor.Log("Unable to load newscaster(" + NewsItems[dailyNews].Texture + ") defined in: " + NewsItems[dailyNews].Source, LogLevel.Error);
             }
 
