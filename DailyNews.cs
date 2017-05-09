@@ -42,8 +42,6 @@ namespace DailyNews
 
             this.contentFolderExtension = config.extension;
 
-
-
             //Read the news files.
             contentFolderFiles = ParseDir(customContentFolder, contentFolderExtension);
             foreach (string file in contentFolderFiles)
