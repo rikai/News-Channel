@@ -38,6 +38,7 @@
     <Compile Include="DailyNews.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModData.cs" />
+    <Compile Include="Headline.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json">

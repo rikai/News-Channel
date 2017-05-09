@@ -4,6 +4,7 @@ namespace DailyNews
 {
     public class ModData
     {
-        public List<string> newsItems { get; set; }
+        public List<string> newsItems { get; }
+        public string newscaster { get; }
     }
 }
