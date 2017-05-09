@@ -50,7 +50,7 @@ namespace DailyNews
                 contentFiles = this.Helper.ReadJsonFile<ModData>(file) ?? new ModData();
                 string newscasterFileName = string.IsNullOrWhiteSpace(contentFiles.newscaster)
                     ? config.defaultNewscaster
-					: contentFiles.newscaster;
+                    : contentFiles.newscaster;
 
                 foreach (string headlineItem in contentFiles.newsItems)
                     NewsItems.Add(new Headline(headlineItem, newscasterFileName, file));
