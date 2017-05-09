@@ -30,6 +30,7 @@
     <Reference Include="System" />
     <Reference Include="CustomTV">
       <HintPath>..\..\CustomTV\CustomTV\bin\Debug\CustomTV.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
  
@@ -37,6 +38,7 @@
     <Compile Include="DailyNews.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModData.cs" />
+    <Compile Include="Headline.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json">
