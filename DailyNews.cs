@@ -25,7 +25,7 @@ namespace DailyNews
         public override void Entry(IModHelper helper)
         {
             Load();
-            TimeEvents.DayOfMonthChanged += (x, y) => checkIfNews();
+            TimeEvents.AfterDayStarted += (x, y) => checkIfNews();
         }
 
         private void Load()
