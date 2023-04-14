@@ -1,6 +1,6 @@
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using CustomTV;
+using PyTK.CustomTV;
 using System;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
@@ -78,11 +78,11 @@ namespace DailyNews
 
         private void deliverNews(TV tv, TemporaryAnimatedSprite sprite, Farmer who, string answer)
         {
-            Texture2D newsScreen = null;
+            string newsScreen = null;
 
             try  //Try to load news screen from .json file
             {
-                newsScreen = Helper.Content.Load<Texture2D>(NewsItems[dailyNews].Texture);
+                newsScreen = Helper.Content.Load<string>(NewsItems[dailyNews].Texture);
             }
             catch  //If the load failed, just load the default newscaster.
             {
